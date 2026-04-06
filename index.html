@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<title>Dostyq Lock</title>
+
+<style>
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #111;
+  color: white;
+  font-family: Arial;
+}
+
+.lock {
+  text-align: center;
+}
+
+input {
+  padding: 10px;
+  font-size: 18px;
+  text-align: center;
+}
+
+button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+.shake {
+  animation: shake 0.3s;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+.panel {
+  display: none;
+  text-align: center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="lock" id="lock">
+  <h2>🔒 Құлып</h2>
+  <input type="password" id="pass" placeholder="Құпия сөз">
+  <br>
+  <button onclick="check()">Ашу</button>
+</div>
+
+<div class="panel" id="panel">
+  <h2>✅ Ашылды!</h2>
+  <button onclick="logout()">🚪 Шығу</button>
+</div>
+
+<script>
+function check() {
+  const pass = document.getElementById("pass");
+  
+  if (pass.value === "0101") {
+    document.getElementById("lock").style.display = "none";
+    document.getElementById("panel").style.display = "block";
+    alert("Дұрыс! Ашылды ✅");
+  } else {
+    pass.classList.add("shake");
+    setTimeout(() => pass.classList.remove("shake"), 300);
+  }
+}
+
+function logout() {
+  document.getElementById("panel").style.display = "none";
+  document.getElementById("lock").style.display = "block";
+}
+</script>
+
+</body>
+</html>

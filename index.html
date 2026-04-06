@@ -1,88 +1,126 @@
-<!DOCTYPE html>
-<html lang="kk">
+<!DOCTYPE html><html lang="kk">
 <head>
 <meta charset="UTF-8">
-<title>Dostyq Lock</title>
-
-<style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dostyq Lock</title><style>
 body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background: #111;
-  color: white;
-  font-family: Arial;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #000;
+    color: white;
+    text-align: center;
 }
 
-.lock {
-  text-align: center;
+/* LOCK */
+#lock {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
+/* INPUT & BUTTON */
 input {
-  padding: 10px;
-  font-size: 18px;
-  text-align: center;
+    padding: 10px;
+    width: 220px;
+    margin: 10px;
+    border-radius: 5px;
+    border: none;
 }
 
 button {
-  margin-top: 10px;
-  padding: 10px 20px;
-  font-size: 16px;
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
 }
 
+/* SHAKE ANIMATION */
 .shake {
-  animation: shake 0.3s;
+    animation: shake 0.3s;
 }
 
 @keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  50% { transform: translateX(5px); }
-  75% { transform: translateX(-5px); }
-  100% { transform: translateX(0); }
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    50% { transform: translateX(6px); }
+    75% { transform: translateX(-6px); }
+    100% { transform: translateX(0); }
 }
 
-.panel {
-  display: none;
-  text-align: center;
-}
-</style>
-</head>
-
-<body>
-
-<div class="lock" id="lock">
-  <h2>🔒 Құлып</h2>
-  <input type="password" id="pass" placeholder="Құпия сөз">
-  <br>
-  <button onclick="check()">Ашу</button>
-</div>
-
-<div class="panel" id="panel" style="display:none;">
-  <h2>✅ Ашылды!</h2>
-  <button onclick="logout()">🚪 Шығу</button>
-</div>
-
-<script>
-function check() {
-  const pass = document.getElementById("pass");
-  
-  if (pass.value === "0101") {
-    document.getElementById("lock").style.display = "none";
-    document.getElementById("panel").style.display = "block";
-    alert("Дұрыс! Ашылды ✅");
-  } else {
-    pass.classList.add("shake");
-    setTimeout(() => pass.classList.remove("shake"), 300);
-  }
+/* PANEL */
+#panel {
+    display: none;
+    padding: 20px;
 }
 
-function logout() {
-  document.getElementById("panel").style.display = "none";
-  document.getElementById("lock").style.display = "block";
+/* BOOK CARD */
+.card {
+    background: #111;
+    padding: 15px;
+    margin: 10px auto;
+    border-radius: 10px;
+    width: 250px;
 }
-</script>
+</style></head><body><!-- LOCK SCREEN --><div id="lock">
+    <h2>🔒 Құлып</h2>
+    <input type="password" id="password" placeholder="Пароль">
+    <button onclick="unlock()">Ашу</button>
+</div><!-- MAIN PANEL --><div id="panel">
+    <h1>📚 Dostyq Library</h1><input id="bookInput" placeholder="Кітап атауы">
+<br>
+<button onclick="addBook()">Қосу</button>
 
-</body>
+<div id="books"></div>
+
+</div><script>
+// КІТАПТАРДЫ ЖҮКТЕУ
+let books = JSON.parse(localStorage.getItem("books")) || [];
+
+// ҚҰЛЫП АШУ
+function unlock() {
+    const password = document.getElementById("password").value;
+
+    if (password === "1234") {
+        document.getElementById("lock").style.display = "none";
+        document.getElementById("panel").style.display = "block";
+        renderBooks();
+    } else {
+        const lock = document.getElementById("lock");
+        lock.classList.add("shake");
+
+        setTimeout(() => {
+            lock.classList.remove("shake");
+        }, 300);
+    }
+}
+
+// КІТАП ҚОСУ
+function addBook() {
+    const input = document.getElementById("bookInput");
+    const title = input.value.trim();
+
+    if (title === "") return;
+
+    books.push(title);
+    localStorage.setItem("books", JSON.stringify(books));
+
+    input.value = "";
+    renderBooks();
+}
+
+// КІТАПТАРДЫ ШЫҒАРУ
+function renderBooks() {
+    const container = document.getElementById("books");
+    container.innerHTML = "";
+
+    books.forEach(book => {
+        const div = document.createElement("div");
+        div.className = "card";
+        div.textContent = book;
+        container.appendChild(div);
+    });
+}
+</script></body>
 </html>

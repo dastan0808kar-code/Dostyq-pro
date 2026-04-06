@@ -3,256 +3,79 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kitaphana</title>
+<title>Кітапхана</title>
 
 <style>
 body {
-  margin:0;
-  font-family:Arial;
-  background: radial-gradient(circle at top, #0f172a, #020617);
-  color:white;
+    margin: 0;
+    font-family: Arial;
+    background: linear-gradient(180deg,#020024,#090979,#000);
+    color: white;
 }
 
 /* HEADER */
-.header {
-  display:flex;
-  justify-content:space-between;
-  padding:15px;
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
 }
 
-.r-btn {
-  background:linear-gradient(45deg,#9333ea,#ec4899);
-  border:none;
-  padding:10px;
-  border-radius:50%;
-  color:white;
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: purple;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* CARD */
-.card {
-  background: linear-gradient(145deg,#1e293b,#0f172a);
-  border-radius:20px;
-  padding:15px;
-  margin:15px;
-  box-shadow:0 0 25px rgba(128,0,255,0.2);
+/* BOOK LIST */
+#books {
+    padding: 10px;
 }
 
-.card img {
-  width:100%;
-  border-radius:15px;
-}
-
-button {
-  background: linear-gradient(45deg,#9333ea,#ec4899);
-  color:white;
-  border:none;
-  padding:10px;
-  border-radius:10px;
-  margin-top:5px;
-}
-
-/* DETAIL */
-.detail {
-  display:none;
-  margin-top:10px;
-}
-.detail.active {
-  display:block;
-}
-
-/* ADMIN */
-.admin {
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:#000;
-  display:none;
-  justify-content:center;
-  align-items:center;
-}
-
-.admin-box {
-  width:90%;
-  max-width:400px;
-  background:#1a2235;
-  padding:20px;
-  border-radius:20px;
-}
-
-.upload-area {
-  display:block;
-  border:2px dashed #7c3aed;
-  padding:20px;
-  text-align:center;
-  border-radius:15px;
-  cursor:pointer;
-}
-
-#preview {
-  width:100%;
-  margin-top:10px;
-  border-radius:15px;
-}
-
-input, textarea {
-  width:100%;
-  margin:5px 0;
-  padding:10px;
-  border-radius:10px;
-  border:none;
-  background:#0f172a;
-  color:white;
+.book {
+    background: rgba(255,255,255,0.05);
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 10px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="header">
-  <h2>📚 Кітапхана</h2>
-  <button class="r-btn" onclick="openAdmin()">R</button>
-</div>
+<header>
+    <h2>📚 Кітапхана</h2>
+    <div class="avatar">R</div>
+</header>
 
 <div id="books"></div>
 
-<!-- ADMIN -->
-<div id="admin" class="admin">
-
-<div class="admin-box">
-
-<h3>🔐 Админ (пароль: 0101)</h3>
-
-<input type="password" id="pass" placeholder="Пароль">
-<button onclick="login()">Кіру</button>
-
-<div id="panel" style="display:none">
-
-<!-- UPLOAD -->
-<label class="upload-area">
-<input type="file" id="fileInput" hidden>
-📤 Сурет жүктеу
-</label>
-
-<img id="preview">
-
-<!-- FORM -->
-<input id="title" placeholder="Кітап аты">
-<input id="author" placeholder="Автор">
-<input id="isbn" placeholder="ISBN">
-<input id="genre" placeholder="Жанр">
-<textarea id="desc" placeholder="Сипаттама"></textarea>
-
-<button onclick="addBook()">➕ Қосу</button>
-
-<br><br>
-<button onclick="closeAdmin()">Жабу</button>
-
-</div>
-</div>
-</div>
-
 <script>
-let books = JSON.parse(localStorage.getItem("books")) || [];
-let imageData = "";
+// 📚 КІТАПТАР ТІЗІМІ
+const books = [
+    {name:"Абай жолы", takenBy:"Асан"},
+    {name:"Қан мен тер", takenBy:"Ерлан"},
+    {name:"Көшпенділер", takenBy:"Бос"}
+];
 
-/* IMAGE LOAD */
-document.getElementById("fileInput").addEventListener("change", e=>{
-  const file = e.target.files[0];
-  const reader = new FileReader();
+// 📌 ШЫҒАРУ
+const container = document.getElementById("books");
 
-  reader.onload = function(){
-    imageData = reader.result;
-    preview.src = imageData;
-    preview.style.display="block";
-  }
+books.forEach(book => {
+    const div = document.createElement("div");
+    div.className = "book";
 
-  reader.readAsDataURL(file);
-});
-
-/* RENDER */
-function render(){
-  const box = document.getElementById("books");
-  box.innerHTML="";
-
-  books.forEach((b,i)=>{
-    box.innerHTML += `
-    <div class="card">
-      <img src="${b.image}">
-      <h3>${b.title}</h3>
-      <p>${b.author}</p>
-
-      <button onclick="toggle(${i})">Қарау</button>
-
-      <div class="detail" id="d${i}">
-        <p>📦 ${b.taken ? "Алынды" : "Бар"}</p>
-        <p>👤 ${b.user || "Ешкім"}</p>
-        <button onclick="take(${i})">📚 Алу</button>
-      </div>
-    </div>
+    div.innerHTML = `
+        <h3>${book.name}</h3>
+        <p>Алған: ${book.takenBy}</p>
     `;
-  });
-}
 
-/* TOGGLE */
-function toggle(i){
-  document.getElementById("d"+i).classList.toggle("active");
-}
-
-/* TAKE */
-function take(i){
-  const name = prompt("Атың:");
-  if(!name) return;
-
-  books[i].taken = true;
-  books[i].user = name;
-
-  save();
-}
-
-/* ADD */
-function addBook(){
-  const book = {
-    title: title.value,
-    author: author.value,
-    isbn: isbn.value,
-    genre: genre.value,
-    desc: desc.value,
-    image: imageData,
-    taken:false,
-    user:""
-  };
-
-  books.push(book);
-  save();
-}
-
-/* SAVE */
-function save(){
-  localStorage.setItem("books", JSON.stringify(books));
-  render();
-}
-
-/* ADMIN */
-function openAdmin(){
-  admin.style.display="flex";
-}
-
-function closeAdmin(){
-  admin.style.display="none";
-}
-
-/* LOGIN */
-function login(){
-  if(pass.value==="0101"){
-    panel.style.display="block";
-  } else {
-    alert("Қате пароль");
-  }
-}
-
-render();
+    container.appendChild(div);
+});
 </script>
 
 </body>
